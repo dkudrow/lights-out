@@ -68,10 +68,10 @@ yum -y update
 
 # 5. Set up the Ethernet interface
 yum -y install bridge-utils
-sed -i 's/BRIDGE=.*//' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
-sed -i 's/ONBOOT=.*//' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
-sed -i 's/NM_CONTROLLED=.*//' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
-sed -i 's/BOOTPROTO=.*//' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
+sed -i '/BRIDGE=.*/d' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
+sed -i '/ONBOOT=.*/d' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
+sed -i '/NM_CONTROLLED=.*/d' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
+sed -i '/BOOTPROTO=.*/d' /etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH
 cat >>/etc/sysconfig/network-scripts/ifcfg-$EUCA_ETH <<EOF
 BRIDGE=br0
 ONBOOT=yes
@@ -92,5 +92,5 @@ IPADDR=$NODE_IP
 EOF
 
 # 7. Stand up the bridge at boot
-sed -i "s/ifup $EUCA_BR//" /etc/rc.local
+sed -i "/ifup $EUCA_BR/d" /etc/rc.local
 echo "ifup $EUCA_BR" >> /etc/rc.local
