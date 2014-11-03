@@ -6,9 +6,9 @@ EUCA_REPO=/etc/yum.repos.d/eucalyptus
 EUCA_PROFILE=/etc/profile.d/euca.sh
 EUCA_BR=br0
 EUCA_ETH=eth1
-NETWORK=10.50.10.0
-NETMASK=255.255.255.0
-IPADDR=${1:-10.50.10.50}
+EUCA_NET=10.50.10.0
+EUCA_MASK=255.255.255.0
+NODE_IP=${1:-10.50.10.50}
 
 ######################################################################
 #
