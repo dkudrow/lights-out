@@ -1,0 +1,10 @@
+export EUCALYPTUS_SRC=/home/opt/eucalyptus
+export EUCALYPTUS=/home/opt/euca4.0
+export JAVA_HOME="/usr/lib/jvm/java-1.7.0"
+#export JAVA_HOME="java-1.7.0-openjdk-1.7.0.71.x86_64"
+export JAVA="$JAVA_HOME/bin/java"
+export PATH=$JAVA_HOME/bin:$EUCALYPTUS/usr/sbin:$PATH
+export AXIS2C_HOME=$EUCALYPTUS/packages/axis2c-1.6.0
+export LD_LIBRARY_PATH=$EUCALYPTUS/packages/axis2c-1.6.0/lib/:$EUCALYPTUS/packages/axis2c-1.6.0/modules/rampart/
+export APACHE_INCLUDES=/usr/include/apache2
+export APR_INCLUDES=/usr/include/apr-1
