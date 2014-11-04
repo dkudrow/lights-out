@@ -2,7 +2,7 @@
 
 class environment {
 	file { '/etc/profile.d/eucalyptus.sh' :
-		source => 'puppet:///modules/environment/files/eucalyptus.sh',
+		content => template('environment/eucalyptus.sh.erb'),
 		mode   => 0644
 	}
 }

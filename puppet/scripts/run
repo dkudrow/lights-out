@@ -1,3 +1,4 @@
 #!/bin/bash
 
 puppet apply --confdir=. manifests/site.pp --noop "$@"
+
