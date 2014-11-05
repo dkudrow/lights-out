@@ -3,7 +3,7 @@ export EUCALYPTUS=<%= @EUCALYPTUS %>
 export JAVA_HOME="/usr/lib/jvm/java-1.7.0"
 export JAVA="$JAVA_HOME/bin/java"
 export PATH=$JAVA_HOME/bin:$EUCALYPTUS/usr/sbin:$PATH
-export AXIS2C_HOME=$EUCALYPTUS/packages/axis2c-1.6.0
-export LD_LIBRARY_PATH=$EUCALYPTUS/packages/axis2c-1.6.0/lib/:$EUCALYPTUS/packages/axis2c-1.6.0/modules/rampart/
+export AXIS2C_HOME=<%= @AXIS2C_HOME %>
+export LD_LIBRARY_PATH=<%= @LD_LIBRARY_PATH %>
 export APACHE_INCLUDES=/usr/include/apache2
 export APR_INCLUDES=/usr/include/apr-1
