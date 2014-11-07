@@ -1,21 +1,22 @@
-# modules/eucalyptus/manifests/init.pp
+# modules/euca_build/manifests/init.pp
 
-class eucalyptus {
+class euca_build {
 
   $euca_repo = 'https://github.com/eucalyptus/eucalyptus.git'
   $src_deps_url = 'http://www.cs.ucsb.edu/~rich/eucalyptus-src-deps-circa4.0.tgz'
   $src_deps = "$EUCALYPTUS_SRC/eucalyptus-src-deps"
 
-  user { 'eucalyptus' :
-  }
-
   file { '/etc/profile.d/eucalyptus.sh' :
-    content => template('environment/eucalyptus.sh.erb'),
+    content => template('euca_build/eucalyptus.sh.erb'),
     mode   => 0644
   }
 
-  file { [ "$EUCA_BASE", "$EUCALYPTUS" ] :
+  file { "$EUCA_BASE" :
     ensure => 'directory'
+  }
+
+  file { "$EUCALYPTUS" :
+    ensure  => 'directory',
   }
 
   file { '/usr/include/apache2' :
@@ -29,7 +30,12 @@ class eucalyptus {
     provider => 'git',
     source   => "$euca_repo",
     revision => "$EUCA_TAG",
-    require  => File[ "$EUCA_BASE" ]
+  }
+
+  exec { 'get WSDL2C.sh' :
+	  command => 'wget https://raw.github.com/eucalyptus/eucalyptus-rpmspec/master/euca-WSDL2C.sh',
+	  cwd     => '/opt',
+	  creates => '/opt/euca-WSDL2C.sh'
   }
 
 #  exec { 'eucalyptus-src-deps' :

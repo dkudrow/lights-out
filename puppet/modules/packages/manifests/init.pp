@@ -2,13 +2,16 @@
 
 class packages {
 
-  $repos = [ 'elrepo-release', 'epel-release' ]
+  $epel = 'http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm'
+  $elrepo = 'http://elrepo.org/linux/elrepo/el6/x86_64/RPMS/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+  $pgdg91 = 'http://yum.pgrpms.org/9.1/redhat/rhel-6-x86_64/pgdg-centos91-9.1-4.noarch.rpm'
+  $euca2ools = 'http://downloads.eucalyptus.com/software/euca2ools/3.0/rhel/6/x86_64/euca2ools-release-3.0.noarch.rpm'
 
   $pkgs_nogpg = [
 
     'axis2-adb', 'axis2-adb-codegen', 'axis2-codegen',
-    'axis2c-devel', 'postgresql91', 'postgresql91-server',
-    'axis2c'
+    'axis2c-devel', 'postgresql91', 'postgresql91-server', 'axis2c',
+    'rampartc', 'rampartc-devel', 'velocity'
 
   ]
 
@@ -23,15 +26,33 @@ class packages {
     'PyGreSQL', 'libcurl', 'libvirt', 'libvirt-devel', 'libxml2-devel',
     'libxslt-devel', 'lvm2', 'm2crypto', 'openssl-devel', 'parted',
     'patch', 'perl-Crypt-OpenSSL-RSA', 'perl-Crypt-OpenSSL-Random',
-    'python-boto', 'python-devel', 'python-setuptools', 'rampartc',
-    'rampartc-devel', 'rsync', 'scsi-target-utils', 'sudo', 'swig',
-    'util-linux-ng', 'vconfig', 'velocity', 'vtun', 'wget', 'which',
-    'xalan-j2-xsltc', 'ipset', 'ebtables', 'bc'
+    'python-boto', 'python-devel', 'python-setuptools', 'rsync',
+	'scsi-target-utils', 'sudo', 'swig', 'util-linux-ng', 'vconfig',
+	'vtun', 'wget', 'which', 'xalan-j2-xsltc', 'ipset', 'ebtables', 'bc'
 
   ]
 
-  package { $repos :
-    ensure => 'present',
+  exec { 'install epel' :
+    command => "yum -y install $epel",
+    creates => '/etc/yum.repos.d/epel.repo',
+    before => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
+  }
+
+  exec { 'install elrepo' :
+    command => "yum -y install $elrepo",
+    creates => '/etc/yum.repos.d/elrepo.repo',
+    before => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
+  }
+
+  exec { 'install euca2ools repo' :
+    command => "yum -y install $euca2ools",
+    creates => '/etc/yum.repos.d/euca2ools-release.repo',
+    before => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
+  }
+
+  exec { 'install pgdg91' :
+    command => "yum -y install $pgdg91",
+    creates => '/etc/yum.repos.d/pgdg-91-centos.repo',
     before => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
   }
 
@@ -39,15 +60,16 @@ class packages {
     enabled  => 1,
     baseurl  => 'http://downloads.eucalyptus.com/software/eucalyptus/build-deps/3.4/rhel/$releasever/$basearch',
     descr    => 'Eucalyptus build dependencies',
-    before => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
+    gpgcheck => 0,
+    before   => [ Package[ $pkgs ], Package[ $pkgs_nogpg ] ]
   }
 
   package { $pkgs :
-    ensure  => 'present',
+    ensure  => 'present'
   }
 
   package { $pkgs_nogpg :
     ensure          => 'present',
-    install_options => [ '--nogpgcheck' ],
+    install_options => [ '--nogpgcheck' ]
   }
 }
