@@ -6,6 +6,29 @@
 #
 ######################################################################
 
+IP_HEAD=${1:-128.111.55.50}
+shift
+IP_NODE=${@:-128.111.55.51}
+
+# start cloud controller
 $EUCALYPTUS/etc/init.d/eucalyptus-cloud start
 
-tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '{print} /[Ii]nterface/ {exit}'
+# wait for interfaces to be detected
+tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '{print} /Detected Interfaces/ {exit}'
+
+# start cluster controller
+$EUCALYPTUS/etc/init.d/eucalyptus-cc start
+
+# register walrus
+euca_conf --register-walrus --partition walrus --host $IP_HEAD --component walrus40
+
+# register cluster controller
+euca_conf --register-cluster --partition cluster0 --host $IP_HEAD --component cc40
+
+# register storage controller
+euca_conf --register-sc --partition cluster0 --host $IP_HEAD --component sc40
+
+# register node controllers
+for node in $IP_NODE; do
+        euca_conf --register-nodes $node
+done

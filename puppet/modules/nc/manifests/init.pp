@@ -12,6 +12,12 @@ class nc {
     source => 'puppet:///modules/nc/libvirtd.conf'
   }
 
+  service { 'libvirtd' :
+    ensure    => 'running',
+    enable    => 'true',
+    subscribe => File[ '/etc/libvirt/libvirtd.conf' ]
+  }
+
   file { "$EUCALYPTUS/etc/eucalyptus/eucalyptus.conf" :
     ensure  => 'present',
     content => template('nc/eucalyptus.conf.erb')
