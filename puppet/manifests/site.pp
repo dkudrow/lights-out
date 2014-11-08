@@ -1,4 +1,4 @@
-# puppet/manifests/site.pp
+# manifests/site.pp
 
 # network
 $NETWORK = '10.50.10.0'
@@ -31,19 +31,22 @@ Exec {
   path => "$path"
 }
 
-node 'clc' {
+node 'common' {
   include packages
   include network
-  include euca_build
-  include euca_config
+  include common
 }
 
-node 'oz.cs.ucsb.edu' inherits 'clc' {
+node 'oz.cs.ucsb.edu' inherits 'common' {
   $HWADDR = '00:26:B9:3D:16:D2'
   $UUID = '99bb00f0-df2b-437b-9b35-1399c3be2ab2'
+
+  include head
 }
 
-node 'objc.cs.ucsb.edu' inherits 'clc' {
+node 'objc.cs.ucsb.edu' inherits 'common' {
   $HWADDR = '00:26:B9:3D:16:D8'
   $UUID = '2755b147-5f3a-4dd8-b408-df050c283421'
+
+  include nc
 }

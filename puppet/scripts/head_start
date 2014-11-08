@@ -1,0 +1,11 @@
+#!/bin/bash
+
+######################################################################
+#
+# scripts/head_start -- Start Eucalyptus on the head node
+#
+######################################################################
+
+$EUCALYPTUS/etc/init.d/eucalyptus-cloud start
+
+tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '{print} /[Ii]nterface/ {exit}'
