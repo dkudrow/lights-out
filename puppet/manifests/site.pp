@@ -30,26 +30,28 @@ Exec {
   path => "$path"
 }
 
-node 'common' {
+class common {
   include packages
   include network
   include common
 }
 
 # 128.111.55.51
-node 'oz.cs.ucsb.edu' inherits 'common' {
+node 'oz.cs.ucsb.edu' {
   $HWADDR = '00:26:B9:3D:16:D2'
   $UUID = '99bb00f0-df2b-437b-9b35-1399c3be2ab2'
   $IPADDR = '10.50.10.51'
 
+  include common
   include head
 }
 
 # 128.111.55.50
-node 'objc.cs.ucsb.edu' inherits 'common' {
+node 'objc.cs.ucsb.edu' {
   $HWADDR = '00:26:B9:3D:16:D8'
   $UUID = '2755b147-5f3a-4dd8-b408-df050c283421'
   $IPADDR = '10.50.10.50'
 
+  include common
   include nc
 }
