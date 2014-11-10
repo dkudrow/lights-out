@@ -6,29 +6,63 @@
 #
 ######################################################################
 
-IP_HEAD=${1:-128.111.55.50}
+IP_HEAD=${1:-128.111.55.51}
 shift
-IP_NODE=${@:-128.111.55.51}
+IP_NODE=${@:-10.50.10.50}
 
-# start cloud controller
+echo "=================================================="
+echo "= Starting Eucalyptus Cloud"
+echo "== Head: $IP_HEAD"
+echo "== Nodes: $IP_NODE"
+
+echo "= Starting cloud controller"
 $EUCALYPTUS/etc/init.d/eucalyptus-cloud start
 
-# wait for interfaces to be detected
-tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '{print} /Detected Interfaces/ {exit}'
+tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '/Detected Interfaces/ {exit}'
 
-# start cluster controller
+echo "= Starting cluster controller"
 $EUCALYPTUS/etc/init.d/eucalyptus-cc start
 
-# register walrus
-euca_conf --register-walrus --partition walrus --host $IP_HEAD --component walrus40
+echo "= Register Walrus"
+euca_conf --register-walrusbackend --partition walrus --host $IP_HEAD --component walrus40
 
 # register cluster controller
+echo "= Register cluster controller"
 euca_conf --register-cluster --partition cluster0 --host $IP_HEAD --component cc40
 
 # register storage controller
+echo "= Register storage controller"
 euca_conf --register-sc --partition cluster0 --host $IP_HEAD --component sc40
 
-# register node controllers
 for node in $IP_NODE; do
-        euca_conf --register-nodes $node
+	echo "= Register node controller at $node"
+	euca_conf --register-nodes $node
 done
+
+# setup credentials
+get_cred() {
+	start_dir=$PWD
+	cd /root
+	rm -rf cred
+	mkdir cred
+	cd cred
+	euca_conf --get-credentials=admin.zip
+	unzip admin.zip
+	source eucarc
+	cd $start_dir
+}
+
+#echo "= Fetch credentials"
+#get_cred
+
+#echo "= Configure SC to use OverlayManager"
+#euca-modify-property -p cluster0.storage.blockstoragemanager=overlay
+
+#echo "= Register Walrus backend"
+#euca_conf --register-walrusbackend --partition walrus --host $IP_HEAD --component walrusback40
+
+#echo "= Set Walrus as provider"
+#euca-modify-property -p  objectstorage.providerclient=walrus
+
+#echo "= Re-fetch credentials"
+#get_cred
