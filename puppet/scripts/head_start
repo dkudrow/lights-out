@@ -23,8 +23,11 @@ tail -F $EUCALYPTUS/var/log/eucalyptus/cloud-output.log | awk '/Detected Interfa
 echo "= Starting cluster controller"
 $EUCALYPTUS/etc/init.d/eucalyptus-cc start
 
+echo "= Register user API"
+euca_conf --register-service -T user-api -H $IP_HEAD -N api40
+
 echo "= Register Walrus"
-euca_conf --register-walrusbackend --partition walrus --host $IP_HEAD --component walrus40
+euca_conf --register-walrus --partition walrus --host $IP_HEAD --component walrus40
 
 # register cluster controller
 echo "= Register cluster controller"
@@ -52,17 +55,14 @@ get_cred() {
 	cd $start_dir
 }
 
-#echo "= Fetch credentials"
-#get_cred
+echo "= Fetch credentials"
+get_cred
 
-#echo "= Configure SC to use OverlayManager"
-#euca-modify-property -p cluster0.storage.blockstoragemanager=overlay
+echo "= Configure SC to use OverlayManager"
+euca-modify-property -p cluster0.storage.blockstoragemanager=overlay
 
-#echo "= Register Walrus backend"
-#euca_conf --register-walrusbackend --partition walrus --host $IP_HEAD --component walrusback40
+echo "= Set Walrus as provider"
+euca-modify-property -p  objectstorage.providerclient=walrus
 
-#echo "= Set Walrus as provider"
-#euca-modify-property -p  objectstorage.providerclient=walrus
-
-#echo "= Re-fetch credentials"
-#get_cred
+echo "= Re-fetch credentials"
+get_cred
