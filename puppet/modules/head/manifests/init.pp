@@ -4,6 +4,7 @@ class head {
 
   file { "$EUCALYPTUS/etc/eucalyptus/eucalyptus.conf" :
     content => template('head/eucalyptus.conf.erb'),
+    require => File[ "$EUCALYPTUS" ]
   }
 
   file { "$EUCA_BASE/db" :
@@ -12,8 +13,9 @@ class head {
   }
 
   file { "$EUCALYPTUS/db" :
-    ensure => 'link',
-    target => "$EUCA_BASE/db",
+    ensure  => 'link',
+    target  => "$EUCA_BASE/db",
+    require => File[ "$EUCALYPTUS", "$EUCA_BASE/db" ]
   }
 
   file { "$EUCA_BASE/bukkits" :
@@ -24,6 +26,7 @@ class head {
   file { "$EUCALYPTUS/bukkits" :
     ensure => 'link',
     target => "$EUCA_BASE/bukkits",
+    require => File[ "$EUCALYPTUS", "$EUCA_BASE/bukkits" ]
   }
 
   file { "$EUCA_BASE/volumes" :
@@ -34,6 +37,7 @@ class head {
   file { "$EUCALYPTUS/volumes" :
     ensure => 'link',
     target => "$EUCA_BASE/volumes",
+    require => File[ "$EUCALYPTUS", "$EUCA_BASE/volumes" ]
   }
 
   file { '/root/cred' :
