@@ -2,6 +2,7 @@
 
 class common {
 
+  # TODO: add to group libvirt if in nc
   user { 'eucalyptus' :
     ensure => 'present'
   }
